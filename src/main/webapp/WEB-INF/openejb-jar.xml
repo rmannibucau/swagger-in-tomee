@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openejb-jar>
+  <pojo-deployment class-name="jaxrs-application">
+    <properties>
+      # swagger brings back jackson*, maybe not what you want in your app
+      cxf.jaxrs.skip-provider-scanning = true
+
+      # swagger activation
+      cxf.jaxrs.features = swagger2
+
+      # jackson is there so we use it but default TomEE provider is johnzon and good as well
+      cxf.jaxrs.providers = com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider
+    </properties>
+  </pojo-deployment>
+</openejb-jar>
