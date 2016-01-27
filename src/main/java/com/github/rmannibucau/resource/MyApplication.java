@@ -12,7 +12,7 @@ public class MyApplication extends Application {
     private Set<Class<?>> classes;
 
     @Override
-    public Set<Class<?>> getClasses() {
+    public Set<Class<?>> getClasses() { // explicitely listing classes we exclude io.swagger.jaxrs.listing.ApiListingResource
         if (classes == null) {
             classes = new HashSet<>(asList(HelloResource.class, YearResource.class));
         }

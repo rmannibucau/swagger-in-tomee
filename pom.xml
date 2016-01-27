@@ -11,12 +11,11 @@
   <name>TomEE + Swagger</name>
   <description>
     Setup Swagger endpoint,
-    go on http://localhost:8080/swagger-in-tomee-1.0-SNAPSHOT/api/swagger.json for instance
+    go on http://localhost:8080/swagger-in-tomee/
   </description>
 
   <properties>
-    <swagger.version>1.5.3</swagger.version>
-    <jackson.version>2.4.5</jackson.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencies>
@@ -30,15 +29,39 @@
     <dependency>
       <groupId>io.swagger</groupId>
       <artifactId>swagger-jaxrs</artifactId>
-      <version>${swagger.version}</version>
-      <scope>provided</scope>
+      <version>1.5.3</version>
+      <exclusions>
+        <!-- API are useless since in javaee-api -->
+        <exclusion>
+          <groupId>javax.ws.rs</groupId>
+          <artifactId>jsr311-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.validation</groupId>
+          <artifactId>validation-api</artifactId>
+        </exclusion>
+        <!-- depending what you do you can need that but not for the GUI using json -->
+        <exclusion>
+          <groupId>com.fasterxml.jackson.dataformat</groupId>
+          <artifactId>jackson-dataformat-xml</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.datatype</groupId>
+          <artifactId>jackson-datatype-joda</artifactId>
+        </exclusion>
+        <!-- we'll reuse the container one or add an impl as well to your app -->
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>swagger-ui</artifactId>
       <version>2.1.8-M1</version>
     </dependency>
+
   </dependencies>
 
   <build>
@@ -66,24 +89,7 @@
         <version>7.0.0-M1</version>
         <configuration>
           <context>${project.artifactId}</context>
-          <libs> <!-- we use Swagger2Feature which is in tomee so add swagger in tomee -->
-            <lib>io.swagger:swagger-jaxrs:${swagger.version}</lib>
-            <lib>io.swagger:swagger-core:${swagger.version}</lib>
-            <lib>io.swagger:swagger-models:${swagger.version}</lib>
-            <lib>io.swagger:swagger-annotations:${swagger.version}</lib>
-            <lib>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:${jackson.version}</lib>
-            <lib>com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:${jackson.version}</lib>
-            <lib>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${jackson.version}</lib>
-            <lib>com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jackson.version}</lib>
-            <lib>com.fasterxml.jackson.core:jackson-core:${jackson.version}</lib>
-            <lib>com.fasterxml.jackson.core:jackson-databind:${jackson.version}</lib>
-            <lib>com.fasterxml.jackson.core:jackson-annotations:${jackson.version}</lib>
-            <lib>com.fasterxml.jackson.module:jackson-module-jaxb-annotations:${jackson.version}</lib>
-            <lib>org.yaml:snakeyaml:1.12</lib>
-            <lib>org.reflections:reflections:0.9.9</lib>
-            <lib>com.google.guava:guava:18.0</lib>
-            <lib>org.javassist:javassist:3.18.0-GA</lib>
-          </libs>
+          <args>"-Dswagger2.title=Swagger2 And TomEE Demo" -Dswagger2.version=${project.version} -Dswagger2.basePath=${project.artifactId}/api</args>
         </configuration>
       </plugin>
     </plugins>

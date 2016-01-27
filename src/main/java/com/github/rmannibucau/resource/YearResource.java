@@ -29,10 +29,14 @@ public class YearResource {
     }
 
     public static class Year {
-        public final int value;
+        private final int value;
 
         public Year(final int value) {
             this.value = value;
+        }
+
+        public int getValue() {
+            return value;
         }
     }
 }

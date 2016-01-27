@@ -1,6 +1,0 @@
-<resources>
-  <Service id="swagger2" class-name="org.apache.cxf.jaxrs.swagger.Swagger2Feature">
-    # if not then the swagger resource can override all user resources cause it uses @Path("/")
-    runAsFilter = true
-  </Service>
-</resources>

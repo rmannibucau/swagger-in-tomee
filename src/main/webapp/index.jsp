@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,7 +17,7 @@
     <script src='webjars/swagger-ui/2.1.8-M1/lib/underscore-min.js' type='text/javascript'></script>
     <script src='webjars/swagger-ui/2.1.8-M1/lib/backbone-min.js' type='text/javascript'></script>
     <script src='webjars/swagger-ui/2.1.8-M1/lib/swagger-client.js' type='text/javascript'></script>
-    <script src='webjars/swagger-ui/2.1.8-M1/swagger-ui.js' type='text/javascript'></script>
+    <script src='webjars/swagger-ui/2.1.8-M1/swagger-ui.min.js' type='text/javascript'></script>
     <script src='webjars/swagger-ui/2.1.8-M1/lib/highlight.7.3.pack.js' type='text/javascript'></script>
     <script src='webjars/swagger-ui/2.1.8-M1/lib/marked.js' type='text/javascript'></script>
 </head>
@@ -27,12 +28,11 @@
 
 <script type="text/javascript">
     $(function () {
-        // todo: replace by a jsp to get the host/port/context dynamically
-        var swaggerUi = new SwaggerUi({
-            url:"http://localhost:8080/swagger-in-tomee/api/swagger.json",
-            dom_id:"swagger-ui-container"
-        });
-        swaggerUi.load();
+        new SwaggerUi({
+            url: '<%= application.getContextPath() %>/api/swagger.json',
+            dom_id:"swagger-ui-container",
+            sorter : 'alpha'
+        }).load();
     });
 </script>
 </body>
