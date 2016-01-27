@@ -5,8 +5,8 @@
       # swagger brings back jackson*, maybe not what you want in your app so let's take the control over providers
       cxf.jaxrs.skip-provider-scanning = true
 
-      cxf.jaxrs.providers = org.apache.johnzon.jaxrs.JohnzonProvider,\
-                            com.github.rmannibucau.resource.swagger2.provider.Swagger2ContainerRequestFilter
+      # let's keep the default TomEE JSON provider (johnzon) and add our swagger integration
+      cxf.jaxrs.providers = org.apache.johnzon.jaxrs.JohnzonProvider,swagger2
     </properties>
   </pojo-deployment>
 </openejb-jar>

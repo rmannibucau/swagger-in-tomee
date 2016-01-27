@@ -1,0 +1,7 @@
+<resources>
+  <Service id="swagger2" class-name="com.github.rmannibucau.resource.swagger2.provider.Swagger2ContainerRequestFilter">
+    title = Swagger2 And TomEE Demo
+    version = ${project.version}
+    basePath = ${project.artifactId}/api
+  </Service>
+</resources>

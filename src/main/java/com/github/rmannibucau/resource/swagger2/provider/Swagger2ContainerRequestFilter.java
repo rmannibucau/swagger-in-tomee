@@ -16,14 +16,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.beans.Introspector;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Set;
-
-import static java.util.Optional.ofNullable;
 
 @PreMatching
 public class Swagger2ContainerRequestFilter extends ApiListingResource implements ContainerRequestFilter {
@@ -39,6 +33,15 @@ public class Swagger2ContainerRequestFilter extends ApiListingResource implement
     @Context
     private Application application;
 
+    private final BeanConfig config = new BeanConfig() {
+        @Override
+        public Set<Class<?>> classes() { // don't use reflections to scan the classpath since we have an app
+            final DefaultJaxrsScanner scanner = new DefaultJaxrsScanner();
+            scanner.setPrettyPrint(getPrettyPrint());
+            return scanner.classesFromContext(application, null);
+        }
+    };
+
     @Override
     public void filter(final ContainerRequestContext requestContext) throws IOException {
         final String path = ui.getPath();
@@ -49,39 +52,56 @@ public class Swagger2ContainerRequestFilter extends ApiListingResource implement
 
     @Override
     protected synchronized Swagger scan(final Application app, final ServletConfig sc) {
-        initScanning();
+        config.setScan(false); // just to force the info init
+        servletContext.setAttribute("reader", config);
         return super.scan(app, sc);
     }
 
-    private void initScanning() {
-        final BeanConfig config = new BeanConfig() {
-            @Override
-            public Set<Class<?>> classes() { // don't use reflections to scan the classpath since we have an app
-                final DefaultJaxrsScanner scanner = new DefaultJaxrsScanner();
-                scanner.setPrettyPrint(getPrettyPrint());
-                return scanner.classesFromContext(application, null);
-            }
-        };
+    public void setSchemes(final String schemes) {
+        config.setSchemes(schemes.split(" *, *"));
+    }
 
-        for (final Method method : BeanConfig.class.getMethods()) { // simple generic factory to avoid to handle all attributes
-            if (!Modifier.isStatic(method.getModifiers()) && method.getName().startsWith("set") && String.class == method.getParameterTypes()[0]) {
-                // try to read from servlet context init paams first otherwise check system property or fallback on default value.
-                final String key = "swagger2." + Introspector.decapitalize(method.getName().substring("set".length()));
-                final String value = ofNullable(servletContext.getAttribute(key)).map(Object::toString)
-                    .orElseGet(() -> System.getProperty(key));
-                if (value != null) {
-                    try {
-                        method.invoke(config, value);
-                    } catch (final IllegalAccessException e) {
-                        throw new IllegalStateException(e);
-                    } catch (final InvocationTargetException e) {
-                        throw new IllegalStateException(e.getCause());
-                    }
-                }
-            }
-        }
-        config.setScan(false); // just to force the info init
+    public void setTitle(final String title) {
+        config.setTitle(title);
+    }
 
-        servletContext.setAttribute("reader", config);
+    public void setVersion(final String version) {
+        config.setVersion(version);
+    }
+
+    public void setDescription(final String description) {
+        config.setDescription(description);
+    }
+
+    public void setTermsOfServiceUrl(final String termsOfServiceUrl) {
+        config.setTermsOfServiceUrl(termsOfServiceUrl);
+    }
+
+    public void setContact(final String contact) {
+        config.setContact(contact);
+    }
+
+    public void setLicense(final String license) {
+        config.setLicense(license);
+    }
+
+    public void setLicenseUrl(final String licenseUrl) {
+        config.setLicenseUrl(licenseUrl);
+    }
+
+    public void setHost(final String host) {
+        config.setHost(host);
+    }
+
+    public void setFilterClass(final String filterClass) {
+        config.setFilterClass(filterClass);
+    }
+
+    public void setBasePath(final String basePath) {
+        config.setBasePath(basePath);
+    }
+
+    public void setPrettyPrint(final String prettyPrint) { // actually ignored if not using swagger jackson provider
+        config.setPrettyPrint(prettyPrint);
     }
 }
