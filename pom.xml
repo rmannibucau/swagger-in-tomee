@@ -93,9 +93,12 @@
       <plugin>
         <groupId>org.apache.tomee.maven</groupId>
         <artifactId>tomee-maven-plugin</artifactId>
-        <version>7.0.0-M1</version>
+        <version>7.0.0-M2</version>
         <configuration>
           <context>${project.artifactId}</context>
+          <systemVariables>
+            <openejb.classloader.forced-load>io.swagger.</openejb.classloader.forced-load>
+          </systemVariables>
         </configuration>
       </plugin>
     </plugins>
